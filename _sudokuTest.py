@@ -16,7 +16,7 @@ sudoku = Sudoku(s)
 print 'test getRow'
 for i in range(9):
     try: assert(s[i] == sudoku.getRow(i))
-    except: print 'r:', s[i], 'method:', sudoku.getRow(i); exit()
+    except: print 'ERROR----->r:', s[i], '\tmethod:', sudoku.getRow(i); exit()
 print 'passed getRow\n'
 
 print 'test getColumn'
@@ -25,13 +25,20 @@ for i in range(9):
     for x in range(9):
         columns.append(s[x][i])
     try: assert(columns == sudoku.getColumn(i))
-    except: print 'c:', columns, '\t', 'method:', sudoku.getColumn(i); exit()
+    except: print 'ERROR----->c:', columns, '\tmethod:', sudoku.getColumn(i); exit()
 print 'passed getColumn\n'
 
 print 'test countMissing'
 try: assert(0 == sudoku.countMissing())
-except: print 'm:', 9, 'method:', sudoku.CountMissing(); exit()
+except: print 'ERROR----->m:', 9, '\tmethod:', sudoku.countMissing(); exit()
 print 'passed countMissing\n'
+
+print 'test willConflict'
+for row in range(9):
+    for column in range(9):
+        try: assert(True == sudoku.willConflict(s[row][column], (row, column)))
+        except: print 'ERROR----->C:', True, '\tmethod:', sudoku.willConflict(s[row][column], (row, column)); exit()
+print 'passed willConflict\n'
 
 print sudoku.toString()
 

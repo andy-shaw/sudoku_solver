@@ -31,6 +31,21 @@ class Sudoku:
                     count += 1
         return count
         
+    def willConflict(self, num, coord):
+        '''if you put num at coord (row, column), is there a conflict?'''
+        
+        #check row
+        if num in self.getRow(coord[0]): return True
+        
+        #check column
+        elif num in self.getColumn(coord[1]): return True
+        
+        #check square
+        elif num in self.getSquare(coord[0], coord[1]): return True
+        
+        else:
+            return False
+        
     def toString(self):
         rowLen = 29
         s = ''
@@ -51,45 +66,46 @@ class Sudoku:
     def getSquare(self, x, y):
         '''return a 1-dimensional array containing the 3x3 square that contains the element at x,y'''
         s = []
-        if 0 <= x < 3:
-            if 0 <= y < 3:
+        if 0 <= y < 3:
+            if 0 <= x < 3:
                 for i in range(3):
                     for j in range(3):
                         s.append(self.matrix[i][j])
-            elif 3 <= y < 6:
+            elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(3):
                         s.append(self.matrix[i][j])
-            elif 6 <= y < 9:
+            elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(3):
                         s.append(self.matrix[i][j])
                         
-        elif 3 <= x < 6:
-            if 0 <= y < 3:
+        elif 3 <= y < 6:
+            if 0 <= x < 3:
                 for i in range(3):
                     for j in range(3,6):
                         s.append(self.matrix[i][j])
-            elif 3 <= y < 6:
+            elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(3,6):
                         s.append(self.matrix[i][j])
-            elif 6 <= y < 9:
+            elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(3,6):
                         s.append(self.matrix[i][j])
                         
-        elif 6 <= x < 9:
-            if 0 <= y < 3:
+        elif 6 <= y < 9:
+            if 0 <= x < 3:
                 for i in range(3):
                     for j in range(6,9):
                         s.append(self.matrix[i][j])
-            elif 3 <= y < 6:
+            elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(6,9):
                         s.append(self.matrix[i][j])
-            elif 6 <= y < 9:
+            elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(6,9):
                         s.append(self.matrix[i][j])
         return s
+        

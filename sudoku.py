@@ -10,6 +10,11 @@ class Sudoku:
     '''Sudoku class'''
     def __init__(self, matrix):
         self.matrix = matrix
+        #verify that this is a proper 9x9 matrix
+        if len(self.matrix) is not 9: raise Exception
+        for row in self.matrix:
+            if len(row) is not 9: raise Exception
+            
         
     def getRow(self, rowIndex):
         '''get the row provided by the index'''
@@ -22,13 +27,31 @@ class Sudoku:
             x.append(row[columnIndex])
         return x
 
-    def countMissing(self):
+    def countMissing(self, row=None, column=None):
         '''return number of 0's in sudoku'''
         count = 0
-        for x in self.matrix:
-            for y in x:
-                if y == 0:
+        #if there's no row or column, get the whole sudoku
+        if row is None and column is None:
+            for x in self.matrix:
+                for num in x:
+                    if num == 0:
+                        count += 1
+                        
+        #if the column was provided, check that column
+        elif row is None and column is not None:
+            for num in self.getColumn(column):
+                if num == 0:
                     count += 1
+                    
+        #if the row was provided, check that row
+        elif column is None and row is not None:
+            for num in self.getRow(row):
+                if num == 0:
+                    count += 1
+        
+        #if both the column and the row are provided, bad
+        else: raise Exception('Row and Column should not be provided together')
+        
         return count
         
     def willConflict(self, num, coord):

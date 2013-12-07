@@ -1,6 +1,6 @@
 from sudoku import Sudoku
 
-s = [
+solved = [
 [2,4,8,3,9,5,7,1,6],
 [5,7,1,6,2,8,3,4,9],
 [9,3,6,7,4,1,5,8,2],
@@ -11,33 +11,83 @@ s = [
 [1,9,5,2,8,6,4,3,7],
 [4,2,7,9,5,3,8,6,1]]
 
-sudoku = Sudoku(s)
+unsolved = [
+[0,0,0,0,0,0,0,0,0],
+[1,1,1,1,1,1,1,1,1],
+[2,2,2,2,2,2,2,2,2],
+[3,3,3,3,3,3,3,3,3],
+[4,4,4,4,4,4,4,4,4],
+[5,5,5,5,5,5,5,5,5],
+[6,6,6,6,6,6,6,6,6],
+[7,7,7,7,7,7,7,7,7],
+[8,8,8,8,8,8,8,8,8]]
+
+sudoku = Sudoku(solved)
+unsolvedSudoku = Sudoku(unsolved)
+
 
 print 'test getRow'
 for i in range(9):
-    try: assert(s[i] == sudoku.getRow(i))
-    except: print 'ERROR----->r:', s[i], '\tmethod:', sudoku.getRow(i); exit()
+    try: assert(solved[i] == sudoku.getRow(i))
+    except: print 'ERROR----->r:', solved[i], '\tmethod:', sudoku.getRow(i); exit()
+    
+for i in range(9):
+    try: assert(unsolved[i] == unsolvedSudoku.getRow(i))
+    except: print 'ERROR----->r:', unsolved[i], '\tmethod:', unsolvedSudoku.getRow(i); exit()
 print 'passed getRow\n'
 
 print 'test getColumn'
 for i in range(9):
     columns = []
     for x in range(9):
-        columns.append(s[x][i])
+        columns.append(solved[x][i])
     try: assert(columns == sudoku.getColumn(i))
     except: print 'ERROR----->c:', columns, '\tmethod:', sudoku.getColumn(i); exit()
+    
+for i in range(9):
+    columns = []
+    for x in range(9):
+        columns.append(unsolved[x][i])
+    try: assert(columns == unsolvedSudoku.getColumn(i))
+    except: print 'ERROR----->c:', columns, '\tmethod:', unsolvedSudoku.getColumn(i); exit()
 print 'passed getColumn\n'
 
+#-----------------------------------------------------------------------------------------
 print 'test countMissing'
 try: assert(0 == sudoku.countMissing())
-except: print 'ERROR----->m:', 9, '\tmethod:', sudoku.countMissing(); exit()
+except: print 'ERROR----->m:', 0, '\tmethod:', sudoku.countMissing(); exit()
+
+try: assert(9 == unsolvedSudoku.countMissing())
+except: print 'ERROR----->m:', 9, '\tmethod:', unsolvedSudoku.countMissing(); exit()
 print 'passed countMissing\n'
+
+#-----------------------------------------------------------------------------------------
+
+print 'test countMissing row'
+try: assert(0 == sudoku.countMissing(row = 0))
+except: print 'ERROR----->m:', 0, '\tmethod:', sudoku.countMissing(row = 0); exit()
+
+try: assert(9 == unsolvedSudoku.countMissing(row = 0))
+except: print 'ERROR----->m:', 9, '\tmethod:', unsolvedSudoku.countMissing(row = 0); exit()
+print 'passed countMissing row\n'
+
+#-----------------------------------------------------------------------------------------
+
+print 'test countMissing column'
+try: assert(0 == sudoku.countMissing(column = 0))
+except: print 'ERROR----->m:', 0, '\tmethod:', sudoku.countMissing(column = 0); exit()
+
+try: assert(1 == unsolvedSudoku.countMissing(column = 0))
+except: print 'ERROR----->m:', 1, '\tmethod:', unsolvedSudoku.countMissing(column = 0); exit()
+print 'passed countMissing column\n'
+
+#-----------------------------------------------------------------------------------------
 
 print 'test willConflict'
 for row in range(9):
     for column in range(9):
-        try: assert(True == sudoku.willConflict(s[row][column], (row, column)))
-        except: print 'ERROR----->C:', True, '\tmethod:', sudoku.willConflict(s[row][column], (row, column)); exit()
+        try: assert(True == sudoku.willConflict(solved[row][column], (row, column)))
+        except: print 'ERROR----->C:', True, '\tmethod:', sudoku.willConflict(solved[row][column], (row, column)); exit()
 print 'passed willConflict\n'
 
 print sudoku.toString()

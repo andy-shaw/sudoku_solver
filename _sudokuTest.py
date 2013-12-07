@@ -42,4 +42,15 @@ print 'passed willConflict\n'
 
 print sudoku.toString()
 
-print s[2][3], sudoku.getSquare(2,3)
+#test each square
+print 'test getSquare'
+assert([2,4,8,5,7,1,9,3,6] == sudoku.getSquare(1,0))
+assert([3,9,5,6,2,8,7,4,1] == sudoku.getSquare(1,4))
+assert([7,1,6,3,4,9,5,8,2] == sudoku.getSquare(1,8))
+assert([6,8,2,3,5,9,7,1,4] == sudoku.getSquare(5,0))
+assert([5,3,9,1,7,4,8,6,2] == sudoku.getSquare(5,4))
+assert([1,7,4,6,2,8,9,5,3] == sudoku.getSquare(5,8))
+assert([8,6,3,1,9,5,4,2,7] == sudoku.getSquare(7,0))
+assert([4,1,7,2,8,6,9,5,3] == sudoku.getSquare(7,4))
+assert([9,2,5,4,3,7,8,6,1] == sudoku.getSquare(7,8))
+print 'passed getSquare'

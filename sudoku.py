@@ -6,26 +6,45 @@ This class represents a sudoku.  The internal state will be a 2-dimensional arra
 0's (zeros) are unresolved numbers.
 '''
 
+emptyCharacters = [' ', 0, '-', '_']
+
+class Block:
+    '''Block of each sudoku element'''
+    def __init__(self, number=None):
+        self.number = number
+        self.possibleNumbers = [1,2,3,4,5,6,7,8,9]
+
 class Sudoku:
     '''Sudoku class'''
     def __init__(self, matrix):
-        self.matrix = matrix
-        #verify that this is a proper 9x9 matrix
-        if len(self.matrix) is not 9: raise Exception
-        for row in self.matrix:
-            if len(row) is not 9: raise Exception
-            
-        
+        #initialize matrix
+        self.matrix = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []]
+        for row in range(9):
+            for column in range(9):
+                self.matrix[row].append(Block(matrix[row][column]))
+
     def getRow(self, rowIndex):
         '''get the row provided by the index'''
-        return self.matrix[rowIndex]
+        row = []
+        for column in self.matrix[rowIndex]:
+            row.append(column.number)
+        return row
         
     def getColumn(self, columnIndex):
         '''get the column provided by the index'''
-        x = []
+        column = []
         for row in self.matrix:
-            x.append(row[columnIndex])
-        return x
+            column.append(row[columnIndex].number)
+        return column
 
     def countMissing(self, row=None, column=None):
         '''return number of 0's in sudoku'''
@@ -34,19 +53,19 @@ class Sudoku:
         if row is None and column is None:
             for x in self.matrix:
                 for num in x:
-                    if num == 0:
+                    if num.number in emptyCharacters:
                         count += 1
                         
         #if the column was provided, check that column
         elif row is None and column is not None:
             for num in self.getColumn(column):
-                if num == 0:
+                if num in emptyCharacters:
                     count += 1
                     
         #if the row was provided, check that row
         elif column is None and row is not None:
             for num in self.getRow(row):
-                if num == 0:
+                if num in emptyCharacters:
                     count += 1
         
         #if both the column and the row are provided, bad
@@ -54,35 +73,34 @@ class Sudoku:
         
         return count
         
-    def willConflict(self, num, coord):
+    def willConflict(self, num, row, column):
         '''if you put num at coord (row, column), is there a conflict?'''
         
         #check row
-        if num in self.getRow(coord[0]): return True
+        for x in self.getRow(row):
+            if x is num: return True
         
         #check column
-        elif num in self.getColumn(coord[1]): return True
+        for x in self.getColumn(column):
+            if x is num: return True
         
         #check square
-        elif num in self.getSquare(coord[0], coord[1]): return True
+        for x in self.getSquare(row, column): 
+            if x is num: return True
         
-        else:
-            return False
+        #else no conflict
+        return False
         
     def toString(self):
-        rowLen = 29
         s = ''
         #top line
-        s += '='*(rowLen) + '\n'
         for row in range(9):
-            s += '||'
-            
             for column in range(9):
-                if (column+1) % 3 == 0:s += str(self.matrix[row][column]) + '||'
-                else:s += str(self.matrix[row][column]) + '  '
+                if (column+1) % 3 == 0: s += str(self.matrix[row][column].number) + ' '
+                else: s += str(self.matrix[row][column].number)
                 
-            if (row+1) % 3 == 0: s += '\n' + '='*(rowLen) + '\n'
-            else: s += '\n' + '-'*(rowLen) + '\n'
+            if (row+1) % 3 == 0: s += '\n\n' 
+            else: s += '\n'
         
         return s
         
@@ -93,42 +111,76 @@ class Sudoku:
             if 0 <= x < 3:
                 for i in range(3):
                     for j in range(3):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(3):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(3):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
                         
         elif 3 <= y < 6:
             if 0 <= x < 3:
                 for i in range(3):
                     for j in range(3,6):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(3,6):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(3,6):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
                         
         elif 6 <= y < 9:
             if 0 <= x < 3:
                 for i in range(3):
                     for j in range(6,9):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 3 <= x < 6:
                 for i in range(3,6):
                     for j in range(6,9):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
             elif 6 <= x < 9:
                 for i in range(6,9):
                     for j in range(6,9):
-                        s.append(self.matrix[i][j])
+                        s.append(self.matrix[i][j].number)
         return s
         
+    def resolveAllPossibilities(self):
+        for row in range(9):
+            for column in range(9):
+                #remove everything that is in the row from possibilities
+                for num in self.getRow(row):
+                    try:
+                        self.matrix[row][column].possibleNumbers.remove(num)
+                    except:
+                        #always want to remove, no matter what
+                        pass
+                        
+                #remove everything that is in the column from possibilities
+                for num in self.getColumn(column):
+                    try:
+                        self.matrix[row][column].possibleNumbers.remove(num)
+                    except:
+                        #always want to remove, no matter what
+                        pass
+                        
+                #remove everything that is in the square from the possibilities
+                #NOTE: This will do unnecessary calculations per square, change if time is issue
+                for num in self.getSquare(row, column):
+                    try:
+                        self.matrix[row][column].possibleNumbers.remove(num)
+                    except:
+                        #always want to remove, no matter what
+                        pass
+
+    def solveSingles(self):
+        for row in range(9):
+            for column in range(9):
+                if len(self.matrix[row][column].possibleNumbers) is 1:
+                    if not self.willConflict(self.matrix[row][column].possibleNumbers[0], row, column):
+                        self.matrix[row][column].number = self.matrix[row][column].possibleNumbers[0]

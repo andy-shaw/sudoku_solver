@@ -43,14 +43,17 @@ def solver(sudoku):
         for row in range(9):
             for column in range(9):
                 if len(sudoku.matrix[row][column].possibleNumbers) > 0:
-                    print row, column, '\t', sudoku.matrix[row][column].possibleNumbers
+                    # print row, column, '\t', sudoku.matrix[row][column].possibleNumbers
+                    pass
         
         sudoku.solveSingles()
         sudoku.resolveAllPossibilities()
         
-        x = raw_input()
+        # x = raw_input()
         
+        import os; os.system('cls')
         print sudoku.toString()
+        from time import sleep; sleep(1)
     
     
 if __name__ == '__main__':

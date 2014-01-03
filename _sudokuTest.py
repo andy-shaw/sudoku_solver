@@ -150,9 +150,13 @@ def main(debug):
             
     #resolve unsolved board
     unsolvedSudoku.resolveAllPossibilities()
-    for row in range(9):
+    for column in range(9):
+        #first row is emptyCharacters
+        assert(unsolvedSudoku.matrix[0][column].possibleNumbers == [9])
+    for row in range(1,9):
         for column in range(9):
-            assert(unsolvedSudoku.matrix[row][column].possibleNumbers == [9])
+            #all other slots have a value, so no possible numbers
+            assert(unsolvedSudoku.matrix[row][column].possibleNumbers == [])
     
     if debug: print '\tall possible numbers resolved correctly in unsolved sudoku'
     

@@ -93,7 +93,6 @@ class Sudoku:
         
     def toString(self):
         s = ''
-        #top line
         for row in range(9):
             for column in range(9):
                 if (column+1) % 3 == 0: s += str(self.matrix[row][column].number) + ' '
@@ -105,7 +104,7 @@ class Sudoku:
         return s
         
     def getSquare(self, x, y):
-        '''return a 1-dimensional array containing the 3x3 square that contains the element at x,y'''
+        '''return a list containing the 3x3 square that contains the element at x,y'''
         s = []
         if 0 <= y < 3:
             if 0 <= x < 3:
@@ -153,6 +152,10 @@ class Sudoku:
     def resolveAllPossibilities(self):
         for row in range(9):
             for column in range(9):
+                #verify that if a number has already been set, then there are no possibilities
+                if not self.matrix[row][column].number in emptyCharacters:
+                    self.matrix[row][column].possibleNumbers = []
+            
                 #remove everything that is in the row from possibilities
                 for num in self.getRow(row):
                     try:
